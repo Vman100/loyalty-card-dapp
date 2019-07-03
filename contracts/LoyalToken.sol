@@ -1,52 +1,71 @@
-pragma solidity ^0.5.4;
+pragma solidity ^0.5.1;
 
-contract LoyaltyTokenNotary {
-    address owner;
-    address[] registeredCertificates;
 
-    event ContractCreated(address contractAddress);
+import "node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol";
+import "node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
+contract LoyalToken is ERC20Mintable {
 
-    constructor() public{
-        owner = msg.sender;
+
+    string public name = "POINT";
+    string public symbol = "POINT";
+    uint256 public decimals = 0;
+    mapping(address => bool) awarders;
+    mapping(uint => address) awards;
+    event AwardGiven(address indexed _from, address indexed _to,  uint indexed _type, uint _amount, uint _date);
+    event AwardRevoked(address indexed _from, address indexed _to,  uint indexed _type, uint _date);
+    event AwardAdded(address _from, uint _type);
+    event AwarderAdded(address _who);
+    event AwarderRemoved(address _who);
+
+
+    function giveAward(address user, uint awardId, uint amount, uint date) public {
+
+    if (awards[awardId] != msg.sender)
+        revert(aaa);
+
+        if (super.balanceOf(msg.sender) < amount)
+        revert(aaa);
+        super.transfer(user, amount);
+        if (date == 0) {
+            date = block.timestamp;
+        }
+        emit AwardGiven(msg.sender, user, awardId, amount, date);
+    }
+    function revokeAward(address user, uint awardId, uint date) public {
+
+        if (awards[awardId] != msg.sender)
+            revert(aaa);
+        if (date == 0) {
+            date = block.timestamp;
+        }
+        emit AwardRevoked(msg.sender, user, awardId, date);
+    }
+    function isAwarder(address _addr) public view returns (bool) {
+        return awarders[_addr];
     }
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "caller is not owner");
-         _;
+    function addAwarder(address _addr) public {
+        awarders[_addr] = true;
+        emit AwarderAdded(_addr);
     }
 
-    function createCertificate(string memory _Name, string memory _Symbol, uint8 _Decimal) public onlyOwner {
-        address newCertificate = address(new LoyaltyToken(msg.sender, _Name, _Symbol, _Decimal));
-        emit ContractCreated(newCertificate);
-        registeredCertificates.push(newCertificate);
+    function deleteAwarder(address _addr) public{
+        awarders[_addr] = false;
+        emit AwarderRemoved(_addr);
+    }
+    function addAward(uint index) public returns (bool) {
+        if (!isAwarder(msg.sender))
+            revert(aaa);
+
+        if (awards[index] == 0x0) {
+            awards[index] = msg.sender;
+            emit AwardAdded(msg.sender, index);
+            return true;
+        }
+        return false;
     }
 
-    function getRegisteredCertificates() public view returns (address[] memory) {
-        return registeredCertificates;
+    function getAward(uint index) public view returns (address) {
+        return awards[index];
     }
 }
-
-
-contract LoyaltyToken {
-    address owner;
-    string Name;
-    string Symbol;
-    uint8 Decimal;
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "caller is not owner");
-         _;
-    }
-
-    constructor (address _owner, string memory _Name, string memory _Symbol, uint8 _Decimal) public {
-        owner = _owner;
-        Name = _Name;
-        Symbol = _Symbol;
-        Decimal = _Decimal;
-    }
-
-    function getLoyaltyTokenDetails() public view returns (address, string memory, string memory, uint8) {
-        return (owner, Name, Symbol, Decimal);
-    }
-}
-
