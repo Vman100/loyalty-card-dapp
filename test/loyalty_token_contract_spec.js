@@ -1,4 +1,4 @@
-const LoyaltyTokenNotary = require('Embark/contracts/LoyaltyTokenNotary');
+const LoyaltyTokenNotary = require('Embark/contracts/LoyaltyTokenNotary')
 const LoyaltyToken = require('Embark/contracts/LoyaltyToken');
 
 function didRevertCorrectly(actualError, expectedError) {
@@ -6,16 +6,19 @@ function didRevertCorrectly(actualError, expectedError) {
 }
 
 let expectedErrorMessages = {
-  "owner": "caller is not owner",
+  "owner": "Ownable: caller is not the owner",
+  "isBrandOwner": "caller is not a brand owner",
+  "brandOwnerExists": "supplied address is already a brand owner"
 }
 
 let accounts;
 
 config({
   contracts: {
-    "LoyaltyTokenNotary": {},
+    "LoyaltyTokenNotary": {
+    },
     "LoyaltyToken": {
-      args: ['$accounts[4]', "Brand ABC", "ABCCoin", "18"]
+      args: ["$accounts[2]", "BrandACoin", "BAC", "18"]
     }
   }
 }, (_err, web3_accounts) => {
@@ -25,55 +28,54 @@ config({
 contract("LoyaltyTokenNotary", function () {
   this.timeout(0);
 
-  it("Owner can create new certificate contract", async function () {
-    let result = await LoyaltyTokenNotary.methods.createCertificate('Brand ABC','ABCCoin','18').send();
-    let log = result.events.ContractCreated;
+  it("owner can add a new brand owner", async function () {
+    let result = await LoyaltyTokenNotary.methods.addBrandOwner(accounts[2]).send();
+    let log = result.events.BrandOwnerAdded;
     assert.ok(log.returnValues[0]);
   });
 
-  it("non Owner cannot create new certificate contract",async function () {
+  it("non owner cannot add a new brand owner", async function () {
     try {
-    await LoyaltyTokenNotary.methods.createCertificate('Brand ABC','ABCCoin','18').send({from: accounts[1]});
+      await LoyaltyTokenNotary.methods.addBrandOwner(accounts[2]).send({from: accounts[1]});
     }catch(error){
       assert.ok(didRevertCorrectly(error.message,expectedErrorMessages["owner"]))
     }
   });
 
-  it("can get array of registered cerificates", async function () {
-    let result = await LoyaltyTokenNotary.methods.getRegisteredCertificates().call()
+  it("A brand owner can only be added once", async function () {
+    try {
+      await LoyaltyTokenNotary.methods.addBrandOwner(accounts[2]).send();
+    }catch(error){
+      assert.ok(didRevertCorrectly(error.message,expectedErrorMessages["brandOwnerExists"]))
+    }
+  });
+
+  it("A brand owner can create a new LoyaltyToken contract", async function () {
+    let result = await LoyaltyTokenNotary.methods.createLoyaltyToken('BrandBCoin','BBC','18').send({from: accounts[2]});
+    let log = result.events.ContractCreated;
+    assert.ok(log.returnValues[0]);
+  });
+
+  it("A brand non owner cannot create new LoyaltyToken contract",async function () {
+    try {
+    await LoyaltyTokenNotary.methods.createLoyaltyToken('BrandBCoin','BBC','18').send();
+    }catch(error){
+      assert.ok(didRevertCorrectly(error.message,expectedErrorMessages["isBrandOwner"]))
+    }
+  });
+
+  it("can get array of registered LoyaltyTokens", async function () {
+    let result = await LoyaltyTokenNotary.methods.getRegisteredLoyaltyTokens().call()
     assert.ok(result)
   });
 
 })
 
-// contract("LoyaltyToken", function () {
-//   this.timeout(0);
+contract("LoyaltyToken", function () {
+  this.timeout(0);
 
-//   it("verifiers can get certificate details", async function () {
-//     let result = await LoyaltyToken.methods.getCertificateDetails().call();
-//     let result2 = await LoyaltyToken.methods.getCertificateDetails().call({from: accounts[4]});
-//     assert.deepEqual(result, result2)
-//   });
-
-//   it("non verifier cannot get certificate details", async function () {
-//     try{
-//     await LoyaltyToken.methods.getCertificateDetails().call({from: accounts[5]});
-//     }catch(error){
-//       assert.ok(didRevertCorrectly(error.message,expectedErrorMessages["verifier"]))
-//     }
-//   });
-
-//   it("Owner can add a new verifier", async function () {
-//     let result = await LoyaltyToken.methods.addVerifier(accounts[3]).send({from: accounts[4]});
-//     log = result.events.verifierAdded;
-//     assert.equal(log.returnValues[0], accounts[3])
-//   });
-
-//   it("non Owner cannot add a new verifier", async function () {
-//     try{
-//     await LoyaltyToken.methods.addVerifier(accounts[1]).send({from: accounts[5]});
-//     }catch(error){
-//       assert.ok(didRevertCorrectly(error.message,expectedErrorMessages["owner"]))
-//     }
-//   });
-// })
+  it("can get LoyaltyToken Details", async function () {
+    let details = await LoyaltyToken.methods.getLoyaltyTokenDetails().call()
+    assert.ok(details)
+  })
+})
