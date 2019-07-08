@@ -1,10 +1,6 @@
 {
   "contracts": ["contracts/**"],
-  "app": {
-    "js/dapp.js": ["app/dapp.jsx"],
-    "index.html": "app/index.html",
-    "images/": ["app/images/**"]
-  },
+  "app": {},
   "buildDir": "dist/",
   "config": "config/",
   "versions": {
@@ -20,5 +16,6 @@
       "optimize": true,
       "optimize-runs": 200
     }
-  }
+  },
+  "generationDir": "embarkArtifacts"
 }

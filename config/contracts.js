@@ -33,6 +33,7 @@ module.exports = {
     dappConnection: [
       "$WEB3",
       "http://localhost:8545",
+      "ws://localhost:8546"
     ],
 
     // Automatically call `ethereum.enable` if true.

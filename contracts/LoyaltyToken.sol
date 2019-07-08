@@ -9,7 +9,7 @@ contract LoyaltyTokenNotary {
     address owner;
     address[] registeredLoyaltyTokens;
 
-    mapping(address => bool) isBrandOwner;
+    mapping(address => bool) public isBrandOwner;
 
     event ContractCreated(address indexed contractAddress);
     event BrandOwnerAdded(address indexed brandOwnerAddress);
@@ -48,12 +48,6 @@ contract LoyaltyTokenNotary {
 contract LoyaltyToken is ERC20, ERC20Detailed, ERC20Mintable, Ownable {
     using SafeERC20 for ERC20;
 
-    // event AwardGiven(address indexed _from, address indexed _to,  uint indexed _type, uint _amount, uint _date);
-    // event AwardRevoked(address indexed _from, address indexed _to,  uint indexed _type, uint _date);
-    // event AwardAdded(address _from, uint _type);
-    // event AwarderAdded(address _who);
-    // event AwarderRemoved(address _who);
-
     constructor (address creator, string memory _Name,string memory _Symbol, uint8 _Decimal) public ERC20Detailed(_Name, _Symbol, _Decimal) {
        if(msg.sender != creator){
        transferOwnership(creator);
@@ -62,45 +56,7 @@ contract LoyaltyToken is ERC20, ERC20Detailed, ERC20Mintable, Ownable {
        }
     }
 
-    // modifier checkAwardId(uint _awardId) {
-    //     require(awards[_awardId] == msg.sender, "caller is not user");
-    //     _;
-    // }
-
     function getLoyaltyTokenDetails() public view returns (address, string memory, string memory, uint8) {
         return (owner(), name(), symbol(), decimals());
     }
-
-    // function giveAward(address _user,uint _awardId, uint _amount, uint _date) public checkAwardId(_awardId) {
-    //     require(balanceOf(msg.sender) > _amount, "Balance is insufficient");
-    //     transfer(_user, _amount);
-    //     emit AwardGiven(msg.sender, _user, _awardId, _amount, _date);
-    // }
-
-    // function revokeAward(address _user, uint _awardId, uint _date) public checkAwardId(_awardId) {
-    //     emit AwardRevoked(msg.sender, _user, _awardId, _date);
-    // }
-    // function isAwarder(address _addr) public view returns (bool) {
-    //     return awarders[_addr];
-    // }
-
-    // function addAwarder(address _addr) public {
-    //     awarders[_addr] = true;
-    //     emit AwarderAdded(_addr);
-    // }
-
-    // function deleteAwarder(address _addr) public{
-    //     awarders[_addr] = false;
-    //     emit AwarderRemoved(_addr);
-    // }
-    // function addAward(uint index) public {
-    //     require(isAwarder(msg.sender), "caller is not Awarder");
-    //     require(awards[index] != address(0x00), "");
-    //     awards[index] = msg.sender;
-    //     emit AwardAdded(msg.sender, index);
-    // }
-
-    // function getAward(uint index) public view returns (address) {
-    //     return awards[index];
-    // }
 }
