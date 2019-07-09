@@ -1,9 +1,9 @@
 pragma solidity ^0.5.4;
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
+import "node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol";
+import "node_modules/openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
+import "node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract LoyaltyTokenNotary {
     address owner;
