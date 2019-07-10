@@ -1,6 +1,6 @@
 import React from 'react';
-import config from '../app/config.js'
-import AddBrand from '../app/AddBrand'
+import config from './config.js'
+import AddBrand from './AddBrand.js'
 
 class BrandList extends React.Component {
     state = {
@@ -10,7 +10,7 @@ class BrandList extends React.Component {
     componentDidMount(){
         fetch(`${config.development.backenUrl}/getBrandList`)
             .then(res =>res.json())
-            .then(data => this.setState({Brands : data.Brands}))
+            .then(data => this.setState({Brands : data}))
       };
     
 
@@ -19,15 +19,11 @@ class BrandList extends React.Component {
             <div>
                 <AddBrand/>
                 <ul>
-                    {this.state.Brands.map(brand =>(
-                        <li>
-                            {brand.brandName}
-                        </li>
-                    ))}
+                    {this.state.Brands}
                 </ul>
             </div>
         );
     }
 }
 
-export default MediaList;
+export default BrandList;

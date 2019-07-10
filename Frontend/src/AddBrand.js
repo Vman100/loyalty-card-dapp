@@ -1,6 +1,5 @@
-import React from 'react';
-import config from '../config.js'
-
+import config from './config.js'
+import React from 'react'
 
 
 class AddBrand extends React.Component {
@@ -19,7 +18,7 @@ class AddBrand extends React.Component {
             brandName: this.state.brandName
           };
 
-        fetch(`${config.development.backenUrl}/postBrandList`, { 
+        fetch(`${config.development.backenUrl}/addBrand`, { 
             method: 'post',
             body: JSON.stringify(brand)})
             .then(res => res.json())
@@ -38,7 +37,7 @@ class AddBrand extends React.Component {
             <div>
                 <form onSubmit = {this.handleSubmit}>
                     <label>
-                    Links:
+                    Brand:
                     <input type="text" name ="brandName" onChange={this.handleChange}/>
                     </label>
                     <button type = "submit">Add</button>
@@ -47,3 +46,5 @@ class AddBrand extends React.Component {
         );
     }
 }
+
+export default AddBrand;
