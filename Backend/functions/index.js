@@ -4,7 +4,7 @@ const admin = require('firebase-admin')
 const cors = require('cors')
 const express = require('express')
 const website = require('./db/brand.js')
-const serviceAccount = require("../functions/node_modules/loyalty-card-dapp-firebase-adminsdk.json");
+const serviceAccount = require("./loyalty-card-dapp-firebase-adminsdk.json");
 
 const expressApp = express()
 expressApp.use(cors({ origin: true }));

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import MediaList from '/home/louis/Desktop/loyalty-card-dapp/Frontend/app/MediaList.js';
+import BrandList from '../app/BrandList';
 
 class App extends React.Component {
 
@@ -8,7 +8,7 @@ class App extends React.Component {
   render(){
     return (
       <div>
-        <MediaList/>
+        <BrandList/>
       </div>
     )
   }

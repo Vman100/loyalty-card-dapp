@@ -1,24 +1,18 @@
 import React from 'react';
-// import { getMedia } from './apis';
-import axios from 'axios';
 import config from '../app/config.js'
 import AddBrand from '../app/AddBrand'
 
-class MediaList extends React.Component {
+class BrandList extends React.Component {
     state = {
         Brands: []
     };
 
     componentDidMount(){
-       this.getBrands();
+        fetch(`${config.development.backenUrl}/getBrandList`)
+            .then(res =>res.json())
+            .then(data => this.setState({Brands : data.Brands}))
       };
     
-    getBrands(){
-        axios.get(`${config.development.backenUrl}/getBrandList`).then(res =>{
-            const Brands = res.data.Brands;
-            this.setState({ Brands });
-        });
-    };
 
     render(){
         return (
