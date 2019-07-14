@@ -1,25 +1,27 @@
 import React from 'react';
-import config from './config.js'
-import AddBrand from './AddBrand.js'
+import { getBrandList } from './apis';
+import AddBrand from './AddBrand'
 
 class BrandList extends React.Component {
     state = {
         Brands: []
     };
 
-    componentDidMount(){
-        fetch(`${config.development.backenUrl}/getBrandList`)
-            .then(res =>res.json())
-            .then(data => this.setState({Brands : data}))
-      };
-    
+    async componentDidMount(){
+       const Brands = await getBrandList()
+       this.setState({ Brands });
+    };
 
     render(){
         return (
             <div>
                 <AddBrand/>
                 <ul>
-                    {this.state.Brands}
+                    {this.state.Brands.map((brand, index) =>(
+                        <li key={index}>
+                            {brand.brandName}
+                        </li>
+                    ))}
                 </ul>
             </div>
         );

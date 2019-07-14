@@ -13,7 +13,6 @@
     "solidity-parser-antlr": "^0.4.3"
   },
   "dependencies": {
-    "axios": "^0.19.0",
     "openzeppelin-solidity": "^2.3.0"
   }
 }
