@@ -47,6 +47,9 @@ const getBrandList = async (req, res) => {
 
 const addBrand = async (req, res) => {
     try {
+      if (typeof req.body !== 'object' || Array.isArray(req.body) || req.body === null) {
+        return res.status(400).json("Invalid request body. Expected an object.");
+      }
       const brandData = prepareData(req.body, "addBrand")
       if(brandData.length === 6) {
         delete brandData['missingParams']
